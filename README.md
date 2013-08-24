@@ -1,7 +1,8 @@
 RC_Switch
 =========
 
-RC_Switch with MSP430 LaunchPad
+This is RC_Switch with MSP430 LaunchPad version.
+It will modify MSP430G2 Family.
 
 
 == Hardware Setup ==
