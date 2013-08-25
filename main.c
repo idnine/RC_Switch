@@ -18,9 +18,14 @@
 
 #define		RCin			BIT3
 #define		LEDout			BIT0
+#define		LED2out			BIT6
 #define		DELAY100us		6
 #define		RChighTimes		20
 #define		RCthreshold		15
+#define		TactSwDelay		4
+
+volatile int isChange = 0;
+volatile int oldValue = 0;
 
 int main(void)
 {
@@ -36,8 +41,8 @@ int main(void)
 	//
 	// IO Set
 	//
-	P1DIR |= LEDout;				// Output P1.1
-	P1OUT &= ~LEDout;				// P1.1 Clear
+	P1DIR |= (LEDout + LED2out);	// Output P1.0, P1.6
+	P1OUT &= ~(LEDout + LED2out);	// P1.0, P1.6 Clear
 	P1DIR &= ~RCin;					// Input P1.3
 	P1OUT |= RCin;					// Input P1.3 Pull-Up Set
 	P1REN |= RCin;					// P1.3 Internal Resister
@@ -65,15 +70,37 @@ void delay100us(void)
 #pragma vector=PORT1_VECTOR
 __interrupt void RCswitchInt(void)
 {
-	volatile int i;
-	volatile int cntRC = 0;
+	int newValue;
+	int i;
+	int cntRC = 0;
+
 	for(i=0; i < RChighTimes; i++)
 	{
 		if(P1IN & RCin) cntRC++;
 		delay100us();
 	}
-	if(cntRC > RCthreshold) P1OUT |= LEDout;
-	else P1OUT &= ~LEDout;
+	if(cntRC > RCthreshold)
+	{
+		P1OUT |= LEDout;
+		newValue = 1;
+	} else {
+		P1OUT &= ~LEDout;
+		newValue = 0;
+	}
+	if(newValue == oldValue)
+	{
+		if(isChange > TactSwDelay)
+		{
+			P1OUT &= ~LED2out;
+			isChange = 0;
+		} else {
+			isChange++;
+		}
+	} else {
+		isChange = 1;
+		oldValue = newValue;
+		P1OUT |= LED2out;
+	}
 	//
 	// P1 RCin IFG Cleared
 	//
