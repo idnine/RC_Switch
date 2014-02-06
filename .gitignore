@@ -1,0 +1,36 @@
+# Object files
+*.o
+*.ko
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CCS Output Files
+.ccsproject
+.cproject
+.project
+.lnk_msp430g22553
+readme.txt
+*.ccxml
+*.map
+*.out
+*.xml
+*.opt
+*.obj
+*.pp
+*.mk
+*.prefs
+*.cmd
+makefile
